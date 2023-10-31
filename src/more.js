@@ -1,21 +1,36 @@
-import { num, urlVal, genreArr, datasRepeat } from "./list.js";
+import { num, urlVal, genreArr } from "./list.js";
 import { genreUrlNum, makeGenreUrl, makeSearchUrl } from "./makeUrl.js";
 import { getData } from "./getData.js";
+import { datasRepeat } from "./append.js";
+
+const idMore = document.querySelector(".more");
+const classMore = document.querySelector("#more");
 
 //더보기 버튼 필요하면 보여주고, 데이터 없으면 안보여주기
 async function moreHide(searchData, num) {
   const searchTotal = searchData.total_pages;
+  const idMore = document.querySelector(".more");
+  const classMore = document.querySelector("#more");
+
+  if (idMore !== null && classMore === null) {
+    moreShowHide(searchTotal, num, idMore);
+  } else if (idMore === null && classMore !== null) {
+    moreShowHide(searchTotal, classMore);
+  }
+}
+
+function moreShowHide(searchTotal, num, idMore) {
   if (searchTotal === 1 && num === 1) {
-    document.querySelector("#more").classList.add("hide");
+    idMore.classList.add("hide");
   } //검색 결과의 마지막 페이지 일때.
   else if (num === searchTotal && num > 1) {
-    document.querySelector("#more").classList.add("hide");
+    idMore.classList.add("hide");
   } //현재 페이지는 1, 전체 페이지는 1보다 크면
   else if (num === 1 && num < searchTotal) {
-    document.querySelector("#more").classList.remove("hide");
+    idMore.classList.remove("hide");
   } //현재 페이지는 1이 아닌ㄴ데, 전체 페이지는 현재 페이지보다 크면
   else if (num < searchTotal && num !== 1) {
-    document.querySelector("#more").classList.remove("hide");
+    idMore.classList.remove("hide");
   }
 }
 

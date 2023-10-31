@@ -1,3 +1,9 @@
+import { getData } from "./getData.js";
+import { moreHide } from "./more.js";
+import { getInput, num, cardContainer, temp } from "./list.js";
+
+// let temp = "";
+
 //데이터에 이미지 없을 경우 다른 이미지 넣어서 temping() 실행.
 function appendFunc(data) {
   const noImg =
@@ -24,8 +30,7 @@ function temping(src, data) {
   //평점 소숫점 1번째 자리까지만 나오게
   vote_average = vote_average.toFixed(2);
 
-
-  // 1, 2, 3위만 왕관표시 되도록 함. 
+  // 1, 2, 3위만 왕관표시 되도록 함.
   if (data.king === "👑" && data.sort) {
     return `
       <div class="swiper-slide" id= ${sort}>
@@ -60,4 +65,41 @@ function temping(src, data) {
   }
 }
 
-export { appendFunc };
+//데이터 가져와서 붙여주기
+async function searchStart2(url) {
+  const searchData = await getData(url);
+  await moreHide(searchData, num);
+  console.log(num);
+  console.log(temp); //_
+  return datasRepeat(searchData.results);
+}
+
+//받은 데이터 반복하며 appendFunc 실행 결과물 cardContainer에 붙여주기
+function datasRepeat(data) {
+  temp = "";
+  for (let i = 0; i < data.length; i++) {
+    temp += appendFunc(data[i]);
+  }
+  return (cardContainer.innerHTML += temp);
+}
+
+//검색 데이터 가져와서 붙여쥐기 _ 데이터 없으면 없다고 처리.
+async function searchStart() {
+  temp = "";
+  cardContainer.innerHTML = "";
+  num = 1;
+
+  const url = await getInput(num);
+  const searchData = await getData(url);
+
+  if (searchData.results.length === 0) {
+    document.querySelector(
+      ".cardContainer"
+    ).innerHTML = `<h2 class = "noResult"> 검색 결과가 없습니다. 😢 </h2>`;
+    document.querySelector("#more").classList.add("hide");
+  } else {
+    await moreHide(searchData, num);
+    return datasRepeat(searchData.results);
+  }
+}
+export { appendFunc, searchStart, datasRepeat, searchStart2, num };
